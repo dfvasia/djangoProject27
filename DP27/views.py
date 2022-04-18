@@ -1,5 +1,8 @@
 import json
 
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from django.db.models import Count, Avg
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -8,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 
 from DP27.models import Vacancy, Skill
+from DjangoProject27 import settings
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -21,12 +25,33 @@ class VacancyListView(ListView):
         if search_text:
             self.object_list = self.object_list(text=search_text)
 
-        response = []
+        self.object_list = self.object_list.order_by("text", "slug")
+
+        # total = self.object_list.count()
+        # page_number = int(request.GET.get("page", 1))
+        # offset = (page_number-1) * settings.TOTAL_ON_PAGE
+        # if (page_number-1) * settings.TOTAL_ON_PAGE < total:
+        #     self.object_list = self.object_list[offset:offset+settings.TOTAL_ON_PAGE]
+        # else:
+        #     self.object_list[offset:offset+total]
+
+        paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        vacancies = []
         for vacancy in self.object_list:
-            response.append({
+            vacancies.append({
                 "id": vacancy.id,
                 "text": vacancy.text,
             })
+
+        response = {
+            "items": vacancies,
+            "num_pages": paginator.num_pages,
+            "total": paginator.count,
+        }
+
         return JsonResponse(response, safe=False)
 
 
@@ -111,3 +136,33 @@ class VacancyDeleteView(DeleteView):
         super().delete(request, *args, **kwargs)
 
         return JsonResponse({"status": "OK"}, status=200)
+
+
+class UserVacancyView(View):
+    def get(self, request):
+        user_qs = User.objects.annotate(vacancies=Count("vacancy"))
+
+        paginator = Paginator(user_qs, settings.TOTAL_ON_PAGE)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
+
+        users = []
+
+        for user in page_obj:
+            users.append(
+                {
+                    "id": user.id,
+                    "name": user.username,
+                    "vacancies": user.vacancies,
+                }
+            )
+
+        response = {
+            "items": users,
+            "num_pages": paginator.num_pages,
+            "total": paginator.count,
+            "avg": user_qs.aggregate(avg=Avg("vacancies"))["avg"],
+        }
+
+        return JsonResponse(response, safe=False)
+
