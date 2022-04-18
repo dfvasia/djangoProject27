@@ -7,7 +7,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 
-from DP27.models import Vacancy
+from DP27.models import Vacancy, Skill
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -79,6 +79,17 @@ class VacancyUpdateView(UpdateView):
         self.object.text = vacancy_data["text"]
         self.object.status = vacancy_data["status"]
 
+        for skill in vacancy_data["skills"]:
+            try:
+                skill_obj = Skill.objects.get(name=skill)
+            except Skill.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "error": "Skill not found"
+                    }, status=404
+                )
+            self.object.skills.add(skill_obj)
+
         self.object.save()
 
         return JsonResponse({
@@ -87,6 +98,7 @@ class VacancyUpdateView(UpdateView):
             "status": self.object.status,
             "data": self.object.data,
             "user": self.object.user_id,
+            "skill": list(self.object.all().values_list("name", flat=True)),
         })
 
 

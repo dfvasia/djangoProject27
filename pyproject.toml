@@ -8,6 +8,7 @@ authors = ["dfvasia <vasilii-zhuravsk@mail.ru>"]
 python = "^3.10"
 Django = "^4.0.3"
 psycopg2 = "^2.9.3"
+Pillow = "^9.1.0"
 
 [tool.poetry.dev-dependencies]
 
