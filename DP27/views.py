@@ -83,8 +83,19 @@ class VacancyCreateView(CreateView):
             slug=vacancy_data["slug"],
             text=vacancy_data["text"],
             status=vacancy_data["status"],
-
         )
+
+        for skill in vacancy_data["skills"]:
+            try:
+                skill_obj = Skill.objects.get(name=skill)
+            except Skill.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "error": "Skill not found"
+                    }, status=404
+                )
+            vacancy.skills.add(skill_obj)
+            vacancy.save()
 
         return JsonResponse({
             "id": vacancy.id,
