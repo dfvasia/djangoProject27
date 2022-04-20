@@ -40,7 +40,7 @@ class VacancyListView(ListView):
         page_obj = paginator.get_page(page_number)
 
         vacancies = []
-        for vacancy in self.object_list:
+        for vacancy in page_obj:
             vacancies.append({
                 "id": vacancy.id,
                 "text": vacancy.text,

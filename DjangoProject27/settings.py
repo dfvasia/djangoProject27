@@ -131,6 +131,27 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+        },
+    },
+    'loggers': {
+            '': {
+                'handlers': ['console'],
+                'level': 'DEBUG',
+                'propagate': False,
+            },
+            'django.db': {
+                'level': 'DEBUG',
+            },
+    },
+}
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
