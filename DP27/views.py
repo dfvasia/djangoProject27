@@ -25,7 +25,7 @@ class VacancyListView(ListView):
         if search_text:
             self.object_list = self.object_list(text=search_text)
 
-        self.object_list = self.object_list.order_by("text", "slug")
+        self.object_list = self.object_list.select_related("user").prefect_related("skills").order_by("text", "slug")
 
         # total = self.object_list.count()
         # page_number = int(request.GET.get("page", 1))
@@ -44,6 +44,7 @@ class VacancyListView(ListView):
             vacancies.append({
                 "id": vacancy.id,
                 "text": vacancy.text,
+                "skills": list(map(str, vacancy.all())),
             })
 
         response = {
