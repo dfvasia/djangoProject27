@@ -11,7 +11,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 
 from DP27.models import Vacancy, Skill
-from DP27.serializers import VacancyListSerializer, VacancyDetailSerializer
 from DjangoProject27 import settings
 
 
@@ -26,14 +25,30 @@ class VacancyListView(ListView):
         if search_text:
             self.object_list = self.object_list(text=search_text)
 
+        self.object_list = self.object_list.select_related("user").prefect_related("skills").order_by("text", "slug")
+
+        # total = self.object_list.count()
+        # page_number = int(request.GET.get("page", 1))
+        # offset = (page_number-1) * settings.TOTAL_ON_PAGE
+        # if (page_number-1) * settings.TOTAL_ON_PAGE < total:
+        #     self.object_list = self.object_list[offset:offset+settings.TOTAL_ON_PAGE]
+        # else:
+        #     self.object_list[offset:offset+total]
+
         paginator = Paginator(self.object_list, settings.TOTAL_ON_PAGE)
         page_number = request.GET.get("page")
         page_obj = paginator.get_page(page_number)
 
-        list(map(lambda x: setattr(x, "username", x.user.username if x.user else None), page_obj))
+        vacancies = []
+        for vacancy in page_obj:
+            vacancies.append({
+                "id": vacancy.id,
+                "text": vacancy.text,
+                "skills": list(map(str, vacancy.skills.all())),
+            })
 
         response = {
-            "items": VacancyListSerializer(page_obj, many=True).data,
+            "items": vacancies,
             "num_pages": paginator.num_pages,
             "total": paginator.count,
         }
@@ -46,7 +61,14 @@ class VacancyDetailView(DetailView):
 
     def get(self, request, *args, **kwargs):
         vacancy = self.get_object()
-        return JsonResponse(VacancyDetailSerializer(vacancy).data)
+        return JsonResponse({
+            "id": vacancy.id,
+            "slug": vacancy.slug,
+            "status": vacancy.status,
+            "data": vacancy.data,
+            "user": vacancy.user_id,
+            "skills": list(map(str, vacancy.skills.all())),
+            })
 
 
 @method_decorator(csrf_exempt, name='dispatch')
