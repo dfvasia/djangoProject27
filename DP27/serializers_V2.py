@@ -4,12 +4,6 @@ from rest_framework import serializers
 from DP27.models import Vacancy, Skill
 
 
-class SkillSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Skill
-        fields = '__all__'
-
-
 class VacancyListSerializer(serializers.ModelSerializer):
     username = serializers.CharField()
     skills = serializers.SlugRelatedField(

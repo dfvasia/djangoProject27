@@ -1,22 +1,23 @@
+import json
+
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Count, Avg
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView, ListView, CreateView, DeleteView, UpdateView
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework.viewsets import ModelViewSet
 
 from DP27.models import Vacancy, Skill
 from DP27.serializers import VacancyListSerializer, VacancyDetailSerializer, VacancyCreateSerializer, \
-    VacancyUpdateSerializer, SkillSerializer
+    VacancyUpdateSerializer
 from DjangoProject27 import settings
 
 
-class SkillsViewSet(ModelViewSet):
-    queryset = Skill.objects.all()
-    serializer_class = SkillSerializer
-
-
+@method_decorator(csrf_exempt, name="dispatch")
 class VacancyListView(ListAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyListSerializer
