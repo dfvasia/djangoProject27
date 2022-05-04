@@ -1,10 +1,10 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.db import models
 
 
-class User(AbstractUser):
+class Profile(User):
     """
-    TODO Третий вариант создания пользователя в DJANGO
+    TODO второй вариант создания пользователя в DJANGO
 
     """
     FEMALE = 'F'

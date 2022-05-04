@@ -1,8 +1,9 @@
 import datetime
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
+
+from authentication.models import User  # Третий вариант создания пользователя в DJANGO
 
 
 class Skill(models.Model):

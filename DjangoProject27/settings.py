@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'DP27',
     'companies',
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     "PAGE_SIZE": 2,
-}
+}  # пагинация выбор метода и количество элементов на странице
+
+AUTH_USER_MODEL = 'authentication.User'  # Третий вариант создания пользователя в DJANGO
