@@ -39,10 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'DP27',
     'companies',
     'authentication',
-]
+]  # Подключение рест фрейворкек, и авторизации по токену
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -162,6 +163,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 2,
-}  # пагинация выбор метода и количество элементов на странице
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication"
+    ],
+}  # пагинация выбор метода и количество элементов на странице и также правило для авторизации по токену
 
 AUTH_USER_MODEL = 'authentication.User'  # Третий вариант создания пользователя в DJANGO
