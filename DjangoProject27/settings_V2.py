@@ -163,11 +163,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 10,
+    "PAGE_SIZE": 2,
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.TokenAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.TokenAuthentication"
     ],
-}  # пагинация выбор метода и количество элементов на странице и также правило для авторизации по токену V3 gj JWT
+}  # пагинация выбор метода и количество элементов на странице и также правило для авторизации по токену
 
 AUTH_USER_MODEL = 'authentication.User'  # Третий вариант создания пользователя в DJANGO
