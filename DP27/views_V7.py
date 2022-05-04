@@ -4,11 +4,9 @@ from django.db.models import Count, Avg, Q, F
 from django.http import JsonResponse
 from django.views import View
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from DP27.models import Vacancy, Skill
-from DP27.permissions import VacancyCreatePermission
 from DP27.serializers import VacancyListSerializer, VacancyDetailSerializer, VacancyCreateSerializer, \
     VacancyUpdateSerializer, SkillSerializer
 from DjangoProject27 import settings
@@ -48,13 +46,12 @@ class VacancyListView(ListAPIView):
 class VacancyDetailView(RetrieveAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyDetailSerializer
-    permission_classes = [IsAuthenticated]
 
 
 class VacancyCreateView(CreateAPIView):
     queryset = Vacancy.objects.all()
     serializer_class = VacancyCreateSerializer
-    permission_classes = [IsAuthenticated, VacancyCreatePermission]
+
 
 class VacancyUpdateView(UpdateAPIView):
     queryset = Vacancy.objects.all()

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'DP27',
     'companies',
     'authentication',
-]  # Подключение рест фрейворкек, и авторизации по токену
+]  # Подключение рест фреймворкек, и авторизации по токену
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
